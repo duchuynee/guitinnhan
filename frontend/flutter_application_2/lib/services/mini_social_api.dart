@@ -20,8 +20,39 @@ class MiniSocialApi {
   final http.Client _client;
   final String baseUrl;
 
+  Future<AuthResult> login({
+    required String email,
+    required String password,
+  }) async {
+    final json = await _post(
+      '/auth/login',
+      body: {
+        'email': email,
+        'password': password,
+      },
+    );
 
+    return AuthResult(
+      accessToken: _extractAccessToken(json),
+      user: AppUser.fromJson(_extractAuthUser(json)),
+    );
+  }
 
+  Future<AuthResult> register({
+    required String name,
+    required String email,
+    required String password,
+    required String passwordConfirmation,
+  }) async {
+    final json = await _post(
+      '/auth/register',
+      body: {
+        'name': name,
+        'email': email,
+        'password': password,
+        'password_confirmation': passwordConfirmation,
+      },
+    );
 
     return AuthResult(
       accessToken: _extractAccessToken(json),
