@@ -3,6 +3,23 @@ import 'package:flutter/material.dart';
 import '../models/post.dart';
 import '../services/api_exception.dart';
 
+class PostCard extends StatefulWidget {
+  const PostCard({
+    super.key,
+    required this.post,
+    this.onToggleLike,
+    this.onToggleSave,
+    this.onReport,
+  });
+
+  final Post post;
+  final Future<Post> Function(Post post)? onToggleLike;
+  final Future<Post> Function(Post post)? onToggleSave;
+  final Future<void> Function(Post post, String reason)? onReport;
+
+  @override
+  State<PostCard> createState() => _PostCardState();
+}
 
 class _PostCardState extends State<PostCard> with SingleTickerProviderStateMixin {
   late Post _post;
