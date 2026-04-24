@@ -7,6 +7,23 @@ import 'app_signup_screen.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _emailController = TextEditingController(text: 'vana@example.com');
+  final _passwordController = TextEditingController(text: 'password');
+  bool _isLoading = false;
+  bool _obscurePassword = true;
+  String? _emailError;
+  String? _passwordError;
+
+  Future<void> _validateAndLogin() async {
+    setState(() {
+      _emailError = null;
+      _passwordError = null;
+    });
 
     if (_emailController.text.trim().isEmpty) {
       setState(() => _emailError = 'Email khong duoc de trong');
