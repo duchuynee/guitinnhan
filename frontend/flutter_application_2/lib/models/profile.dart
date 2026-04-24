@@ -1,26 +1,7 @@
 import 'app_user.dart';
 import 'post.dart';
 
-class UserProfile extends AppUser {
-  final String? phone;
-  final bool isMe;
-  final bool isFollowing;
-  final ProfileStats stats;
 
-  const UserProfile({
-    required super.id,
-    required super.name,
-    required super.username,
-    required super.email,
-    required super.avatarUrl,
-    required super.bio,
-    required super.location,
-    required super.website,
-    required this.phone,
-    required this.isMe,
-    required this.isFollowing,
-    required this.stats,
-  });
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     return UserProfile(
