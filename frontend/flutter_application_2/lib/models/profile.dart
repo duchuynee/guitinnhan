@@ -27,23 +27,6 @@ class ProfileStats {
   final int followingCount;
   final int savedPostsCount;
 
-  const ProfileStats({
-    required this.postsCount,
-    required this.followersCount,
-    required this.followingCount,
-    required this.savedPostsCount,
-  });
-
-  factory ProfileStats.fromJson(Map<String, dynamic> json) {
-    return ProfileStats(
-      postsCount: (json['posts_count'] as num?)?.toInt() ?? 0,
-      followersCount: (json['followers_count'] as num?)?.toInt() ?? 0,
-      followingCount: (json['following_count'] as num?)?.toInt() ?? 0,
-      savedPostsCount: (json['saved_posts_count'] as num?)?.toInt() ?? 0,
-    );
-  }
-}
-
 class ProfileBundle {
   final UserProfile profile;
   final List<Post> postsPreview;
