@@ -229,25 +229,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue[700],
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: _isLoading
-                      ? const SizedBox(
-                          height: 25,
-                          width: 25,
-                          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 3),
-                        )
-                      : const Text(
-                          'Dang ky',
-                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Center(
-                child: TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text(
-                    'Da co tai khoan? Dang nhap',
+
                     style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
                   ),
                 ),
