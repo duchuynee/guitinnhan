@@ -29,7 +29,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
- 
+  @override
+  void didUpdateWidget(covariant ProfileScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.refreshToken != widget.refreshToken) {
+      _loadProfile(showRefreshMessage: true);
+    }
+  }
+
+  Future<void> _loadProfile({bool showRefreshMessage = false}) async {
+    final session = SessionScope.of(context);
+
     setState(() {
       _isLoading = true;
       _error = null;
