@@ -31,7 +31,13 @@ class _SearchScreenState extends State<SearchScreen> {
     }
   }
 
-update
+  @override
+  void didUpdateWidget(covariant SearchScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.refreshToken != widget.refreshToken) {
+      _search(query: _lastQuery, showRefreshMessage: _lastQuery.isEmpty);
+    }
+  }
 
   @override
   void dispose() {
