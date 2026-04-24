@@ -22,21 +22,6 @@ class MiniSocialApi {
 
 
 
-  Future<AuthResult> register({
-    required String name,
-    required String email,
-    required String password,
-    required String passwordConfirmation,
-  }) async {
-    final json = await _post(
-      '/auth/register',
-      body: {
-        'name': name,
-        'email': email,
-        'password': password,
-        'password_confirmation': passwordConfirmation,
-      },
-    );
 
     return AuthResult(
       accessToken: _extractAccessToken(json),
