@@ -1,7 +1,26 @@
 import 'app_user.dart';
 import 'post.dart';
 
+class UserProfile extends AppUser {
+  final String? phone;
+  final bool isMe;
+  final bool isFollowing;
+  final ProfileStats stats;
 
+  const UserProfile({
+    required super.id,
+    required super.name,
+    required super.username,
+    required super.email,
+    required super.avatarUrl,
+    required super.bio,
+    required super.location,
+    required super.website,
+    required this.phone,
+    required this.isMe,
+    required this.isFollowing,
+    required this.stats,
+  });
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     return UserProfile(
@@ -26,6 +45,23 @@ class ProfileStats {
   final int followersCount;
   final int followingCount;
   final int savedPostsCount;
+
+  const ProfileStats({
+    required this.postsCount,
+    required this.followersCount,
+    required this.followingCount,
+    required this.savedPostsCount,
+  });
+
+  factory ProfileStats.fromJson(Map<String, dynamic> json) {
+    return ProfileStats(
+      postsCount: (json['posts_count'] as num?)?.toInt() ?? 0,
+      followersCount: (json['followers_count'] as num?)?.toInt() ?? 0,
+      followingCount: (json['following_count'] as num?)?.toInt() ?? 0,
+      savedPostsCount: (json['saved_posts_count'] as num?)?.toInt() ?? 0,
+    );
+  }
+}
 
 class ProfileBundle {
   final UserProfile profile;
