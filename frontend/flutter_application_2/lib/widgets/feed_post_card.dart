@@ -12,14 +12,6 @@ class PostCard extends StatefulWidget {
     this.onReport,
   });
 
-  final Post post;
-  final Future<Post> Function(Post post)? onToggleLike;
-  final Future<Post> Function(Post post)? onToggleSave;
-  final Future<void> Function(Post post, String reason)? onReport;
-
-  @override
-  State<PostCard> createState() => _PostCardState();
-}
 
 class _PostCardState extends State<PostCard> with SingleTickerProviderStateMixin {
   late Post _post;
