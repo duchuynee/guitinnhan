@@ -5,9 +5,11 @@ import 'package:http/http.dart' as http;
 
 import '../models/app_notification.dart';
 import '../models/app_user.dart';
+import '../models/comment.dart';
 import '../models/post.dart';
 import '../models/profile.dart';
 import '../models/story.dart';
+import '../models/user_summary.dart';
 import 'api_exception.dart';
 
 class MiniSocialApi {
@@ -177,6 +179,111 @@ class MiniSocialApi {
     );
   }
 
+  Future<AppUser> updateProfile(
+    String token, {
+    String? name,
+    String? bio,
+    String? avatarUrl,
+    String? location,
+    String? website,
+    String? phone,
+  }) async {
+    final body = <String, dynamic>{};
+    if (name != null) body['name'] = name;
+    if (bio != null) body['bio'] = bio;
+    if (avatarUrl != null) body['avatar_url'] = avatarUrl;
+    if (location != null) body['location'] = location;
+    if (website != null) body['website'] = website;
+    if (phone != null) body['phone'] = phone;
+
+    final json = await _put('/me', token: token, body: body);
+    return AppUser.fromJson(_readMap(json, 'data'));
+  }
+
+  Future<Post> updatePost(
+    String token,
+    int postId, {
+    String? content,
+    String? imageUrl,
+    String? locationName,
+    String? feelingText,
+  }) async {
+    final body = <String, dynamic>{};
+    if (content != null) body['content'] = content;
+    if (imageUrl != null) body['image_url'] = imageUrl;
+    if (locationName != null) body['location_name'] = locationName;
+    if (feelingText != null) body['feeling_text'] = feelingText;
+
+    final json = await _put('/posts/$postId', token: token, body: body);
+    return Post.fromJson(_readMap(json, 'data'));
+  }
+
+  Future<void> deletePost(String token, int postId) async {
+    await _delete('/posts/$postId', token: token);
+  }
+
+  Future<List<UserSummary>> searchUsers(String token, {String? search, int perPage = 20}) async {
+    final params = <String, String>{'per_page': '$perPage'};
+    if (search != null && search.trim().isNotEmpty) params['search'] = search.trim();
+    final json = await _get('/users', token: token, queryParameters: params);
+    return _readList(json, 'data')
+        .map((e) => UserSummary.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<Map<String, dynamic>> getUserProfile(String token, int userId) async {
+    return _get('/users/$userId', token: token);
+  }
+
+  Future<List<UserSummary>> getUserFollowers(String token, int userId, {int perPage = 20}) async {
+    final json = await _get('/users/$userId/followers', token: token, queryParameters: {'per_page': '$perPage'});
+    return _readList(json, 'data')
+        .map((e) => UserSummary.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<List<UserSummary>> getUserFollowing(String token, int userId, {int perPage = 20}) async {
+    final json = await _get('/users/$userId/following', token: token, queryParameters: {'per_page': '$perPage'});
+    return _readList(json, 'data')
+        .map((e) => UserSummary.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<void> followUser(String token, int userId) async {
+    await _post('/users/$userId/follow', token: token);
+  }
+
+  Future<void> unfollowUser(String token, int userId) async {
+    await _delete('/users/$userId/follow', token: token);
+  }
+
+  Future<Map<String, dynamic>> getPost(String token, int postId) async {
+    return _get('/posts/$postId', token: token);
+  }
+
+  Future<List<Comment>> getComments(String token, int postId, {int perPage = 20}) async {
+    final json = await _get('/posts/$postId/comments', token: token, queryParameters: {'per_page': '$perPage'});
+    return _readList(json, 'data')
+        .map((e) => Comment.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<Map<String, dynamic>> addComment(String token, int postId, String content) async {
+    return _post('/posts/$postId/comments', token: token, body: {'content': content});
+  }
+
+  Future<void> deleteComment(String token, int postId, int commentId) async {
+    await _delete('/posts/$postId/comments/$commentId', token: token);
+  }
+
+  Future<void> markNotificationRead(String token, int notificationId) async {
+    await _post('/notifications/$notificationId/read', token: token);
+  }
+
+  Future<void> markAllNotificationsRead(String token) async {
+    await _post('/notifications/read-all', token: token);
+  }
+
   Future<void> logout(String token) async {
     await _post('/auth/logout', token: token);
   }
@@ -207,6 +314,26 @@ class MiniSocialApi {
   }) async {
     try {
       final response = await _client.post(
+        _buildUri(path),
+        headers: _headers(token),
+        body: body == null ? null : jsonEncode(body),
+      );
+
+      return _decode(response);
+    } on ApiException {
+      rethrow;
+    } catch (_) {
+      throw const ApiException('Khong the ket noi den backend. Hay kiem tra Laravel dang chay tren cong 8000.');
+    }
+  }
+
+  Future<Map<String, dynamic>> _put(
+    String path, {
+    String? token,
+    Map<String, dynamic>? body,
+  }) async {
+    try {
+      final response = await _client.put(
         _buildUri(path),
         headers: _headers(token),
         body: body == null ? null : jsonEncode(body),
